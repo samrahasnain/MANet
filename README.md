@@ -1,1 +1,1 @@
-# MANet
+# general_kaggle
