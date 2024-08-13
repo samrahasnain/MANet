@@ -112,7 +112,15 @@ class Solver(object):
         print('Speed: %f FPS' % (img_num / (time_e - time_s)))
         print('Test Done!')
     
-  
+    def DiceLoss(self, preds, targets):
+        preds = preds.view(-1)
+        targets = targets.view(-1)
+        
+        intersection = (preds * targets).sum()
+        dice_coeff = (2. * intersection + self.smooth) / (preds.sum() + targets.sum() + self.smooth)
+        
+        return 1 - dice_coeff
+        
     # training phase
     def train(self):
         iter_num = len(self.train_loader.dataset) // self.config.batch_size
@@ -134,18 +142,18 @@ class Solver(object):
 
                
                 self.optimizer.zero_grad()
-                sal_label_coarse = F.interpolate(sal_label, size_coarse, mode='bilinear', align_corners=True)
+                sal_edge_in = F.interpolate(sal_edge, size_coarse, mode='bilinear', align_corners=True)
                 
-                sal_final, coarse_sal_align = self.net(sal_image,sal_depth)
+                sal_final, sal_align = self.net(sal_image,sal_depth)
                 
                 #sal_loss_coarse_rgb =  F.binary_cross_entropy_with_logits(coarse_sal_rgb, sal_label_coarse, reduction='sum')
-                sal_loss_coarse =  F.binary_cross_entropy_with_logits(coarse_sal_align, sal_label_coarse, reduction='sum')
+                sal_loss_align =  DiceLoss(sal_align, sal_edge_in)
                 sal_final_loss =  F.binary_cross_entropy_with_logits(sal_final, sal_label, reduction='sum')
                 #edge_loss_rgbd0=F.smooth_l1_loss(sal_edge_rgbd0,sal_edge)
                 #edge_loss_rgbd1=F.smooth_l1_loss(sal_edge_rgbd1,sal_edge)
                 #edge_loss_rgbd2=F.smooth_l1_loss(sal_edge_rgbd2,sal_edge)
                 
-                sal_loss_fuse = sal_final_loss + sal_loss_coarse
+                sal_loss_fuse = sal_final_loss + sal_loss_align
                 sal_loss = sal_loss_fuse/ (self.iter_size * self.config.batch_size)
                 r_sal_loss += sal_loss.data
                 r_sal_loss_item+=sal_loss.item() * sal_image.size(0)
