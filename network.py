@@ -156,7 +156,7 @@ class General(nn.Module):
        
     def forward(self,rgb,depth):
         conv1r, conv2r, conv3r, conv4r, conv5r, conv1d, conv2d, conv3d, conv4d, conv5d = self.FeatureExtractionModule(rgb,depth)
-        sal_align = self.saliencyalignment(conv5r, conv5d)
+        sal_align = self.saliencyalignment(conv2r, conv2d)
         F_r5 = self.inceptionmodule(self.FAM5(conv5r))
         F_r4 = self.inceptionmodule(self.FAM4(conv4r))
         F_r3 = self.inceptionmodule(self.FAM3(conv3r))
