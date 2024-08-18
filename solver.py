@@ -54,7 +54,7 @@ class Solver(object):
 
         self.optimizer = torch.optim.Adam(self.net.parameters(), lr=self.lr, weight_decay=self.wd)
 
-        #self.print_network(self.net, 'General Network Structure')
+        self.print_network(self.net, 'General Network Structure')
 
     # print the network information and parameter numbers
     def print_network(self, model, name):
@@ -117,7 +117,7 @@ class Solver(object):
         targets = targets.view(-1)
         
         intersection = (preds * targets).sum()
-        dice_coeff = (2. * intersection + self.smooth) / (preds.sum() + targets.sum() + self.smooth)
+        dice_coeff = (2. * intersection + 1e-5) / (preds.sum() + targets.sum() + 1e-5)
         
         return 1 - dice_coeff
         
