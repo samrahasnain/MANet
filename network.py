@@ -57,10 +57,10 @@ class depthwise_separable_conv(nn.Module):
 class SaliencyAlignment(nn.Module):
     def __init__(self):
         super(SaliencyAlignment, self).__init__()
-        self.eca = ECABlock(320)
-        self.dwsc = depthwise_separable_conv(320,320,3,1)
+        self.eca = ECABlock(24)
+        self.dwsc = depthwise_separable_conv(24,24,3,1)
         self.relu = nn.ReLU()
-        self.conv_last = depthwise_separable_conv(320,1,3,1)
+        self.conv_last = depthwise_separable_conv(24,1,3,1)
     
     def forward(self, x,y):
         x = self.dwsc(x)
