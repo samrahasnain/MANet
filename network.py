@@ -133,7 +133,7 @@ class Decoder(nn.Module):
         out3 = (up_out4 * F_r3) + (up_out4 * F_d3)
         up_out3 = self.upsample(self.upsample(self.upsample(out3)))
 
-        sal_final = self.last_conv(up_out1)
+        sal_final = self.last_conv(up_out3)
         return sal_final
 
 
