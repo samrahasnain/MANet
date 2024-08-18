@@ -147,7 +147,7 @@ class Solver(object):
                 sal_final, sal_align = self.net(sal_image,sal_depth)
                 
                 #sal_loss_coarse_rgb =  F.binary_cross_entropy_with_logits(coarse_sal_rgb, sal_label_coarse, reduction='sum')
-                sal_loss_align =  DiceLoss(sal_align, sal_edge_in)
+                sal_loss_align =  self.DiceLoss(sal_align, sal_edge_in)
                 sal_final_loss =  F.binary_cross_entropy_with_logits(sal_final, sal_label, reduction='sum')
                 #edge_loss_rgbd0=F.smooth_l1_loss(sal_edge_rgbd0,sal_edge)
                 #edge_loss_rgbd1=F.smooth_l1_loss(sal_edge_rgbd1,sal_edge)
